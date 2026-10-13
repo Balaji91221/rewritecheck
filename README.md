@@ -9,7 +9,7 @@ A small TypeScript SDK and CLI that checks explicit constraints in rewritten pro
 [![CI](https://github.com/Balaji91221/rewritecheck/actions/workflows/ci.yml/badge.svg)](https://github.com/Balaji91221/rewritecheck/actions/workflows/ci.yml)
 ![Node](https://img.shields.io/badge/node-%3E%3D20-339933)
 ![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178c6)
-[![npm](https://img.shields.io/npm/v/@kelavathbalajinaik/rewritecheck)](https://www.npmjs.com/package/@kelavathbalajinaik/rewritecheck)
+[![npm](https://img.shields.io/npm/v/rewritecheck)](https://www.npmjs.com/package/rewritecheck)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
 [Quick start](#quick-start) · [SDK](#use-as-a-library) · [CLI](#use-the-cli) · [Architecture](docs/architecture.md) · [PromptForge demo](docs/promptforge.md) · [Contributing](CONTRIBUTING.md)
@@ -49,13 +49,13 @@ The SDK works locally with no runtime dependencies, model, API key, or hosted se
 Node.js 20 or newer is required. Install the public package in your project:
 
 ```sh
-npm install @kelavathbalajinaik/rewritecheck
+npm install rewritecheck
 ```
 
 Run the included example without cloning this repository:
 
 ```sh
-node node_modules/@kelavathbalajinaik/rewritecheck/examples/sdk.mjs
+node node_modules/rewritecheck/examples/sdk.mjs
 ```
 
 The example reports a changed word limit and a reversed deployment instruction. It runs locally without a model or API key.
@@ -63,7 +63,7 @@ The example reports a changed word limit and a reversed deployment instruction. 
 For the standalone CLI, no project setup is needed:
 
 ```sh
-npx @kelavathbalajinaik/rewritecheck --help
+npx rewritecheck --help
 ```
 
 ## Use as a library
@@ -71,7 +71,7 @@ npx @kelavathbalajinaik/rewritecheck --help
 Save the following as `check.mjs`, then run `node check.mjs`:
 
 ```js
-import { auditRewrite } from '@kelavathbalajinaik/rewritecheck';
+import { auditRewrite } from 'rewritecheck';
 
 const report = auditRewrite({
   original: 'Use at most 150 words. Do not publish.',
@@ -135,17 +135,17 @@ The timeout bounds the entire asynchronous review phase. Errors, cancellation, i
 
 ## Use the CLI
 
-Run the scoped package directly, or use the `rewritecheck` binary in a project that has installed it:
+Run the package directly, or use the `rewritecheck` binary in a project that has installed it:
 
 ```sh
-npx @kelavathbalajinaik/rewritecheck ./rewrite.json --json
-cat ./rewrite.json | npx @kelavathbalajinaik/rewritecheck -
+npx rewritecheck ./rewrite.json --json
+cat ./rewrite.json | npx rewritecheck -
 ```
 
 Try the included fixture after `npm install`:
 
 ```sh
-npx --no-install rewritecheck node_modules/@kelavathbalajinaik/rewritecheck/examples/local-demo.json --json
+npx --no-install rewritecheck node_modules/rewritecheck/examples/local-demo.json --json
 ```
 
 The fixture intentionally returns exit code `1` because constraints changed.

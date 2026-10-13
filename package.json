@@ -1,5 +1,5 @@
 {
-  "name": "@kelavathbalajinaik/rewritecheck",
+  "name": "rewritecheck",
   "version": "0.1.0",
   "description": "Evidence-based checks for explicit constraints in rewritten prompts.",
   "type": "module",
