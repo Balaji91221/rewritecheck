@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PromptForge × RewriteCheck · Local integration demo</title>
+  <style>
+    * { box-sizing: border-box; } body { margin: 0; background: #f7f6f1; color: #18322f; font: 15px/1.55 system-ui,sans-serif; }
+    main { max-width: 1100px; margin: auto; padding: 42px 24px 60px; } h1 { font-size: clamp(26px,4vw,38px); line-height: 1.15; margin: 10px 0 14px; letter-spacing: -.035em; }
+    h2 { font-size: 19px; margin: 0 0 12px; } p { margin: 8px 0 16px; } .eyebrow { color: #27776b; font-size: 12px; letter-spacing: .12em; text-transform: uppercase; }
+    .note { color: #5b6c66; max-width: 850px; } .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin: 26px 0 18px; }
+    section { padding: 22px; border: 1px solid #d7dfd9; border-radius: 14px; background: #fffef9; margin-bottom: 18px; } .grid section { margin: 0; }
+    label { display: block; font-weight: 600; margin: 12px 0 6px; } textarea { width: 100%; min-height: 128px; border: 1px solid #bfcfc7; border-radius: 8px; padding: 12px; color: #203d35; background: white; font: 14px/1.55 ui-monospace,monospace; resize: vertical; }
+    #constraints { min-height: 250px; } .row { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; margin: 14px 0; } button { border: 0; border-radius: 8px; padding: 11px 16px; font: 600 14px system-ui; color: white; background: #206859; cursor: pointer; }
+    button.secondary { background: #e5ece5; color: #244b41; } button:disabled { opacity: .45; cursor: not-allowed; } textarea:focus, button:focus-visible { outline: 3px solid #7eb6aa; outline-offset: 3px; }
+    #status { font-weight: 650; } .bad { color: #9b4228; } .good { color: #206859; } ul { padding-left: 20px; } li { margin: 14px 0; } code { white-space: pre-wrap; overflow-wrap: anywhere; } .evidence { display: block; margin-top: 4px; color: #4d625a; font-size: 13px; } pre { white-space: pre-wrap; overflow-wrap: anywhere; margin: 0; }
+    details { margin-top: 14px; } summary { cursor: pointer; font-weight: 600; } #error { color: #9b4228; } @media(max-width:700px) { .grid { grid-template-columns: 1fr; } main { padding: 26px 16px; } }
+  </style>
+</head>
+<body><main>
+  <div class="eyebrow">Local integration demo</div>
+  <h1>A clearer prompt should keep your constraints.</h1>
+  <p class="note">This demo runs the real PromptForge <code>refine()</code> engine with an authored model-response fixture, then applies RewriteCheck. It makes no live LLM calls and does not install anything into the PromptForge browser extension.</p>
+  <div class="grid">
+    <section><h2>1. Original request</h2><label for="original">Original prompt</label><textarea id="original">Explain caching. Use at most 150 words. Do not send email. Keep API_KEY unchanged.</textarea><p class="note">You choose exactly what to protect in the contract below. Nothing is extracted automatically.</p></section>
+    <section><h2>2. Review the rewrite</h2><label for="rewritten">Rewritten prompt · editable</label><textarea id="rewritten" disabled></textarea><div class="row"><button id="generate" disabled>Run fixture through PromptForge</button><button id="restore" class="secondary" disabled>Restore original text</button></div><p class="note">The fixture deliberately changes the word limit and email instruction. Editing this box immediately reruns the supplied checks.</p></section>
+  </div>
+  <section><h2>3. Explicit protected constraints</h2><label for="constraints">Contract JSON · editable</label><textarea id="constraints" spellcheck="false"></textarea><p class="note">Each source quote must occur in the original. Literal checks only prove presence. Numeric and action checks use the SDK's supported rules.</p></section>
+  <section aria-live="polite"><h2>Evidence</h2><p id="status">Loading local modules…</p><p id="error"></p><ul id="findings"></ul><p class="note">A preserved verdict covers only the constraints you supplied. Other facts, intent, and requirements remain unchecked.</p><div class="row"><button id="accept" disabled>Use checked text in local preview</button></div><details><summary>Raw report</summary><pre id="report"></pre></details></section>
+  <section><h2>Local composer preview</h2><p class="note">This preview is filled only after a fresh acceptance-time check. It does not send a message or write to a real chat.</p><pre id="composer">Nothing accepted yet.</pre></section>
+</main>
+<script type="module">
+  const el = Object.fromEntries(['original','rewritten','constraints','generate','restore','accept','status','error','findings','report','composer'].map(id => [id, document.getElementById(id)]));
+  el.constraints.value = JSON.stringify([
+    { id:'word-limit', kind:'limit', source:{quote:'at most 150 words'}, unit:'words', operator:'lte', value:150 },
+    { id:'no-email', kind:'action', source:{quote:'Do not send email'}, action:'send', target:'email', policy:'forbid' },
+    { id:'identifier', kind:'literal', source:{quote:'API_KEY'} }
+  ], null, 2);
+  try {
+    const { refine } = await import('/promptforge/prompt-helper/index.js');
+    const { refineWithChecks, reviewPromptForgeAcceptance } = await import('./examples/promptforge-adapter.mjs');
+    let result = null;
+    function currentInput() {
+      const constraints = JSON.parse(el.constraints.value);
+      if (!Array.isArray(constraints)) throw new Error('Contract must be a JSON array.');
+      return { original:el.original.value, result, constraints, rewritten:el.rewritten.value };
+    }
+    function render() {
+      el.accept.disabled = true; el.error.textContent = ''; el.findings.replaceChildren();
+      el.report.textContent = ''; el.status.className = '';
+      el.composer.textContent = 'Nothing accepted yet.';
+      if (!result) { el.status.textContent = 'Ready. Run the authored fixture through PromptForge.'; return null; }
+      try {
+        const review = reviewPromptForgeAcceptance(currentInput());
+        const report = review.result.rewritecheck;
+        el.status.className = review.canAccept ? 'good' : 'bad';
+        el.status.textContent = `${report.verdict.toUpperCase()} · ${report.checkedConstraints} supplied constraints checked`;
+        el.report.textContent = JSON.stringify(report, null, 2);
+        for (const finding of report.findings) {
+          const li = document.createElement('li');
+          const title = document.createElement('strong'); title.textContent = `${finding.id}: ${finding.status}`; li.append(title);
+          const reason = document.createElement('span'); reason.className='evidence'; reason.textContent=finding.reason; li.append(reason);
+          const before = document.createElement('code'); before.className='evidence'; before.textContent=`Original [${finding.original.start}, ${finding.original.end}): ${finding.original.text}`; li.append(before);
+          const after = document.createElement('code'); after.className='evidence'; after.textContent='Rewrite: '+(finding.rewritten.map(span => `[${span.start}, ${span.end}): ${span.text}`).join(' | ') || 'No matching evidence'); li.append(after);
+          el.findings.append(li);
+        }
+        el.accept.disabled = !review.canAccept;
+        return review;
+      } catch (error) { el.status.textContent='Review required'; el.status.className='bad'; el.error.textContent=error.message; el.report.textContent=''; return null; }
+    }
+    el.generate.disabled = false;
+    el.generate.addEventListener('click', async () => {
+      el.generate.disabled = true; el.error.textContent = '';
+      try {
+        const constraints = JSON.parse(el.constraints.value);
+        const output = await refineWithChecks({ original:el.original.value, constraints, refine, call:async () => JSON.stringify({
+          intent:'explain', refined_prompt:'Explain caching. Use at most 300 words. Send email. Keep API_KEY unchanged.',
+          applied_techniques:['clarity'], suggestions:[], quality_before:30, quality_after:90
+        }) });
+        if (output.status !== 'ok' || !output.result) throw new Error('PromptForge did not return a rewrite (input may be too short).');
+        result = output.result; el.rewritten.value = result.refined_prompt; el.rewritten.disabled = false; el.restore.disabled = false; render();
+      } catch (error) { result = null; render(); el.error.textContent=error.message; }
+      finally { el.generate.disabled=false; }
+    });
+    for (const field of [el.original, el.rewritten, el.constraints]) field.addEventListener('input', render);
+    el.restore.addEventListener('click', () => { el.rewritten.value=el.original.value; render(); });
+    el.accept.addEventListener('click', () => {
+      // Never reuse the previous report: text and constraints may have changed.
+      const review = render();
+      if (review?.canAccept) el.composer.textContent=review.result.refined_prompt;
+    });
+    render();
+  } catch (error) { el.status.textContent='Local demo unavailable'; el.error.textContent=`Build RewriteCheck and start promptforge-server.mjs with a built PromptForge core directory. ${error.message}`; }
+</script></body></html>

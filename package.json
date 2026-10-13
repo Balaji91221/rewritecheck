@@ -1,0 +1,58 @@
+{
+  "name": "@kelavathbalajinaik/rewritecheck",
+  "version": "0.1.0",
+  "description": "Evidence-based checks for explicit constraints in rewritten prompts.",
+  "type": "module",
+  "license": "MIT",
+  "engines": {
+    "node": ">=20"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "types": "./dist/index.d.ts",
+  "bin": {
+    "rewritecheck": "./dist/cli.js"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE",
+    "docs",
+    "examples"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "npm run build && node --test test/*.test.mjs examples/promptforge.integration.test.mjs",
+    "benchmark": "npm run build && node benchmark/run.mjs",
+    "demo": "npm run build && node examples/sdk.mjs",
+    "prepack": "npm run build"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "typescript": "^5.9.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Balaji91221/rewritecheck.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Balaji91221/rewritecheck/issues"
+  },
+  "homepage": "https://github.com/Balaji91221/rewritecheck#readme",
+  "keywords": [
+    "prompt",
+    "evaluation",
+    "llm",
+    "rewriting",
+    "constraints",
+    "typescript"
+  ],
+  "publishConfig": {
+    "access": "public"
+  }
+}

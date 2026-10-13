@@ -1,0 +1,653 @@
+[
+  {
+    "id": "literal-kept",
+    "category": "literal",
+    "expected": "preserved",
+    "reason": "The configured literal is present.",
+    "input": {
+      "original": "Use pnpm.",
+      "rewritten": "Use pnpm for this task.",
+      "constraints": [
+        {
+          "id": "check",
+          "kind": "literal",
+          "source": {
+            "quote": "pnpm"
+          },
+          "caseSensitive": true
+        }
+      ]
+    }
+  },
+  {
+    "id": "literal-replaced",
+    "category": "literal",
+    "expected": "review",
+    "reason": "Missing literal evidence requires review; the library does not infer equivalents.",
+    "input": {
+      "original": "Use pnpm.",
+      "rewritten": "Use npm.",
+      "constraints": [
+        {
+          "id": "check",
+          "kind": "literal",
+          "source": {
+            "quote": "pnpm"
+          },
+          "caseSensitive": true
+        }
+      ]
+    }
+  },
+  {
+    "id": "literal-case-insensitive",
+    "category": "literal",
+    "expected": "preserved",
+    "reason": "Case-insensitive matching was explicitly selected.",
+    "input": {
+      "original": "Use pnpm.",
+      "rewritten": "Use PNPM.",
+      "constraints": [
+        {
+          "id": "check",
+          "kind": "literal",
+          "source": {
+            "quote": "pnpm"
+          },
+          "caseSensitive": false
+        }
+      ]
+    }
+  },
+  {
+    "id": "literal-case-sensitive",
+    "category": "literal",
+    "expected": "review",
+    "reason": "The exact case-sensitive literal is absent.",
+    "input": {
+      "original": "Use pnpm.",
+      "rewritten": "Use PNPM.",
+      "constraints": [
+        {
+          "id": "check",
+          "kind": "literal",
+          "source": {
+            "quote": "pnpm"
+          },
+          "caseSensitive": true
+        }
+      ]
+    }
+  },
+  {
+    "id": "literal-filename",
+    "category": "literal",
+    "expected": "preserved",
+    "reason": "Literal filename retained.",
+    "input": {
+      "original": "Write output to report.json.",
+      "rewritten": "Save the result in report.json.",
+      "constraints": [
+        {
+          "id": "check",
+          "kind": "literal",
+          "source": {
+            "quote": "report.json"
+          },
+          "caseSensitive": true
+        }
+      ]
+    }
+  },
+  {
+    "id": "literal-scope-limitation",
+    "category": "literal",
+    "expected": "preserved",
+    "reason": "Literal mode checks presence, not polarity; an action constraint is needed for that intent.",
+    "input": {
+      "original": "Use pnpm.",
+      "rewritten": "Do not use pnpm.",
+      "constraints": [
+        {
+          "id": "check",
+          "kind": "literal",
+          "source": {
+            "quote": "pnpm"
+          },
+          "caseSensitive": true
+        }
+      ]
+    }
+  },
+  {
+    "id": "bound-upper",
+    "category": "bound",
+    "expected": "preserved",
+    "reason": "Recognized numeric operator, value, and unit are retained.",
+    "input": {
+      "original": "Use at most 150 words.",
+      "rewritten": "Use no more than 150 words.",
+      "constraints": [
+        {
+          "id": "check",
+          "kind": "limit",
+          "source": {
+            "quote": "Use at most 150 words."
+          },
+          "unit": "words",
+          "operator": "lte",
+          "value": 150
+        }
+      ]
+    }
+  },
+  {
+    "id": "bound-strict-upper",
+    "category": "bound",
+    "expected": "preserved",
+    "reason": "Recognized numeric operator, value, and unit are retained.",
+    "input": {
+      "original": "Use under 150 words.",
+      "rewritten": "Use fewer than 150 words.",
+      "constraints": [
+        {
+          "id": "check",
+          "kind": "limit",
+          "source": {
+            "quote": "Use under 150 words."
+          },
+          "unit": "words",
+          "operator": "lt",
+          "value": 150
+        }
+      ]
+    }
+  },
+  {
+    "id": "bound-exact",
+    "category": "bound",
+    "expected": "preserved",
+    "reason": "Recognized numeric operator, value, and unit are retained.",
+    "input": {
+      "original": "Use exactly 3 examples.",
+      "rewritten": "Use exactly 3 examples.",
+      "constraints": [
+        {
+          "id": "check",
+          "kind": "limit",
+          "source": {
+            "quote": "Use exactly 3 examples."
+          },
+          "unit": "examples",
+          "operator": "eq",
+          "value": 3
+        }
+      ]
+    }
+  },
+  {
+    "id": "bound-lower",
+    "category": "bound",
+    "expected": "preserved",
+    "reason": "Recognized numeric operator, value, and unit are retained.",
+    "input": {
+      "original": "Use at least 3 examples.",
+      "rewritten": "Use no fewer than 3 examples.",
+      "constraints": [
+        {
+          "id": "check",
+          "kind": "limit",
+          "source": {
+            "quote": "Use at least 3 examples."
+          },
+          "unit": "examples",
+          "operator": "gte",
+          "value": 3
+        }
+      ]
+    }
+  },
+  {
+    "id": "bound-strict-lower",
+    "category": "bound",
+    "expected": "preserved",
+    "reason": "Recognized numeric operator, value, and unit are retained.",
+    "input": {
+      "original": "Use over 3 examples.",
+      "rewritten": "Use more than 3 examples.",
+      "constraints": [
+        {
+          "id": "check",
+          "kind": "limit",
+          "source": {
+            "quote": "Use over 3 examples."
+          },
+          "unit": "examples",
+          "operator": "gt",
+          "value": 3
+        }
+      ]
+    }
+  },
+  {
+    "id": "bound-up-to",
+    "category": "bound",
+    "expected": "preserved",
+    "reason": "Recognized numeric operator, value, and unit are retained.",
+    "input": {
+      "original": "Use up to 150 words.",
+      "rewritten": "Use at most 150 words.",
+      "constraints": [
+        {
+          "id": "check",
+          "kind": "limit",
+          "source": {
+            "quote": "Use up to 150 words."
+          },
+          "unit": "words",
+          "operator": "lte",
+          "value": 150
+        }
+      ]
+    }
+  },
+  {
+    "id": "bound-loosened",
+    "category": "bound",
+    "expected": "changed",
+    "reason": "The numeric upper bound increased.",
+    "input": {
+      "original": "Use at most 150 words.",
+      "rewritten": "Use at most 250 words.",
+      "constraints": [
+        {
+          "id": "check",
+          "kind": "limit",
+          "source": {
+            "quote": "Use at most 150 words."
+          },
+          "unit": "words",
+          "operator": "lte",
+          "value": 150
+        }
+      ]
+    }
+  },
+  {
+    "id": "bound-tightened",
+    "category": "bound",
+    "expected": "changed",
+    "reason": "Even a tighter bound changes the declared constraint.",
+    "input": {
+      "original": "Use at most 150 words.",
+      "rewritten": "Use at most 100 words.",
+      "constraints": [
+        {
+          "id": "check",
+          "kind": "limit",
+          "source": {
+            "quote": "Use at most 150 words."
+          },
+          "unit": "words",
+          "operator": "lte",
+          "value": 150
+        }
+      ]
+    }
+  },
+  {
+    "id": "bound-strictness",
+    "category": "bound",
+    "expected": "changed",
+    "reason": "The inclusive bound became strict.",
+    "input": {
+      "original": "Use at most 150 words.",
+      "rewritten": "Use under 150 words.",
+      "constraints": [
+        {
+          "id": "check",
+          "kind": "limit",
+          "source": {
+            "quote": "Use at most 150 words."
+          },
+          "unit": "words",
+          "operator": "lte",
+          "value": 150
+        }
+      ]
+    }
+  },
+  {
+    "id": "bound-omitted",
+    "category": "review",
+    "expected": "review",
+    "reason": "No numeric evidence remains; brevity is not an equivalent bound.",
+    "input": {
+      "original": "Use at most 150 words.",
+      "rewritten": "Keep it brief.",
+      "constraints": [
+        {
+          "id": "check",
+          "kind": "limit",
+          "source": {
+            "quote": "Use at most 150 words."
+          },
+          "unit": "words",
+          "operator": "lte",
+          "value": 150
+        }
+      ]
+    }
+  },
+  {
+    "id": "bound-spelled-number",
+    "category": "review",
+    "expected": "review",
+    "reason": "Spelled-out numbers are outside the bounded numeric grammar.",
+    "input": {
+      "original": "Use at most 150 words.",
+      "rewritten": "Use at most one hundred fifty words.",
+      "constraints": [
+        {
+          "id": "check",
+          "kind": "limit",
+          "source": {
+            "quote": "Use at most 150 words."
+          },
+          "unit": "words",
+          "operator": "lte",
+          "value": 150
+        }
+      ]
+    }
+  },
+  {
+    "id": "bound-negated",
+    "category": "review",
+    "expected": "review",
+    "reason": "Negation is not an affirmative numeric-bound preservation.",
+    "input": {
+      "original": "Use at most 150 words.",
+      "rewritten": "Do not use at most 150 words.",
+      "constraints": [
+        {
+          "id": "check",
+          "kind": "limit",
+          "source": {
+            "quote": "Use at most 150 words."
+          },
+          "unit": "words",
+          "operator": "lte",
+          "value": 150
+        }
+      ]
+    }
+  },
+  {
+    "id": "bound-conflicting",
+    "category": "review",
+    "expected": "review",
+    "reason": "Conflicting numeric evidence should not be selected opportunistically.",
+    "input": {
+      "original": "Use at most 150 words.",
+      "rewritten": "Use at most 150 words. Use at most 250 words.",
+      "constraints": [
+        {
+          "id": "check",
+          "kind": "limit",
+          "source": {
+            "quote": "Use at most 150 words."
+          },
+          "unit": "words",
+          "operator": "lte",
+          "value": 150
+        }
+      ]
+    }
+  },
+  {
+    "id": "bound-repeated",
+    "category": "bound",
+    "expected": "preserved",
+    "reason": "Repeated matching supported bounds do not introduce a conflict.",
+    "input": {
+      "original": "Use at most 150 words.",
+      "rewritten": "Use at most 150 words. Keep at most 150 words.",
+      "constraints": [
+        {
+          "id": "check",
+          "kind": "limit",
+          "source": {
+            "quote": "Use at most 150 words."
+          },
+          "unit": "words",
+          "operator": "lte",
+          "value": 150
+        }
+      ]
+    }
+  },
+  {
+    "id": "action-required",
+    "category": "action",
+    "expected": "preserved",
+    "reason": "An affirmative simple imperative is retained.",
+    "input": {
+      "original": "Run tests.",
+      "rewritten": "Please run tests.",
+      "constraints": [
+        {
+          "id": "check",
+          "kind": "action",
+          "source": {
+            "quote": "Run tests."
+          },
+          "action": "run",
+          "target": "tests",
+          "policy": "require"
+        }
+      ]
+    }
+  },
+  {
+    "id": "action-required-reversed",
+    "category": "action",
+    "expected": "changed",
+    "reason": "The required action becomes forbidden.",
+    "input": {
+      "original": "Run tests.",
+      "rewritten": "Do not run tests.",
+      "constraints": [
+        {
+          "id": "check",
+          "kind": "action",
+          "source": {
+            "quote": "Run tests."
+          },
+          "action": "run",
+          "target": "tests",
+          "policy": "require"
+        }
+      ]
+    }
+  },
+  {
+    "id": "action-forbidden",
+    "category": "action",
+    "expected": "preserved",
+    "reason": "An equivalent supported prohibition is retained.",
+    "input": {
+      "original": "Do not deploy the app.",
+      "rewritten": "Never deploy the app.",
+      "constraints": [
+        {
+          "id": "check",
+          "kind": "action",
+          "source": {
+            "quote": "Do not deploy the app."
+          },
+          "action": "deploy",
+          "target": "the app",
+          "policy": "forbid"
+        }
+      ]
+    }
+  },
+  {
+    "id": "action-forbidden-reversed",
+    "category": "action",
+    "expected": "changed",
+    "reason": "A forbidden action becomes required.",
+    "input": {
+      "original": "Do not deploy the app.",
+      "rewritten": "Deploy the app.",
+      "constraints": [
+        {
+          "id": "check",
+          "kind": "action",
+          "source": {
+            "quote": "Do not deploy the app."
+          },
+          "action": "deploy",
+          "target": "the app",
+          "policy": "forbid"
+        }
+      ]
+    }
+  },
+  {
+    "id": "action-explicit-alias",
+    "category": "action",
+    "expected": "preserved",
+    "reason": "The action alias was explicitly supplied by the caller.",
+    "input": {
+      "original": "Run tests.",
+      "rewritten": "Execute tests.",
+      "constraints": [
+        {
+          "id": "check",
+          "kind": "action",
+          "source": {
+            "quote": "Run tests."
+          },
+          "action": "run",
+          "target": "tests",
+          "policy": "require",
+          "aliases": [
+            "execute"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "id": "action-omitted",
+    "category": "review",
+    "expected": "review",
+    "reason": "Missing action evidence requires review.",
+    "input": {
+      "original": "Run tests.",
+      "rewritten": "Format code.",
+      "constraints": [
+        {
+          "id": "check",
+          "kind": "action",
+          "source": {
+            "quote": "Run tests."
+          },
+          "action": "run",
+          "target": "tests",
+          "policy": "require"
+        }
+      ]
+    }
+  },
+  {
+    "id": "action-conditional",
+    "category": "review",
+    "expected": "review",
+    "reason": "Conditional scope cannot establish the original unconditional requirement.",
+    "input": {
+      "original": "Run tests.",
+      "rewritten": "Run tests if needed.",
+      "constraints": [
+        {
+          "id": "check",
+          "kind": "action",
+          "source": {
+            "quote": "Run tests."
+          },
+          "action": "run",
+          "target": "tests",
+          "policy": "require"
+        }
+      ]
+    }
+  },
+  {
+    "id": "action-quoted",
+    "category": "review",
+    "expected": "review",
+    "reason": "Quoted words do not establish an imperative.",
+    "input": {
+      "original": "Run tests.",
+      "rewritten": "Say \"Run tests.\"",
+      "constraints": [
+        {
+          "id": "check",
+          "kind": "action",
+          "source": {
+            "quote": "Run tests."
+          },
+          "action": "run",
+          "target": "tests",
+          "policy": "require"
+        }
+      ]
+    }
+  },
+  {
+    "id": "action-compound",
+    "category": "review",
+    "expected": "review",
+    "reason": "Compound scope is outside the supported simple imperative grammar.",
+    "input": {
+      "original": "Run tests.",
+      "rewritten": "Run tests and deploy.",
+      "constraints": [
+        {
+          "id": "check",
+          "kind": "action",
+          "source": {
+            "quote": "Run tests."
+          },
+          "action": "run",
+          "target": "tests",
+          "policy": "require"
+        }
+      ]
+    }
+  },
+  {
+    "id": "action-target-expanded",
+    "category": "review",
+    "expected": "review",
+    "reason": "The changed operand has additional scope beyond the literal configured target.",
+    "input": {
+      "original": "Run tests.",
+      "rewritten": "Run tests in staging.",
+      "constraints": [
+        {
+          "id": "check",
+          "kind": "action",
+          "source": {
+            "quote": "Run tests."
+          },
+          "action": "run",
+          "target": "tests",
+          "policy": "require"
+        }
+      ]
+    }
+  }
+]

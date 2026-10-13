@@ -1,0 +1,9 @@
+{
+  "original": "Use pnpm. Keep the answer at most 150 words. Do not deploy the app.",
+  "rewritten": "Use pnpm. Keep the answer at most 250 words. Deploy the app.",
+  "constraints": [
+    { "id": "package-manager", "kind": "literal", "source": { "quote": "pnpm" } },
+    { "id": "word-limit", "kind": "limit", "source": { "quote": "Keep the answer at most 150 words." }, "unit": "words", "operator": "lte", "value": 150 },
+    { "id": "deployment", "kind": "action", "source": { "quote": "Do not deploy the app." }, "action": "deploy", "target": "the app", "policy": "forbid" }
+  ]
+}
