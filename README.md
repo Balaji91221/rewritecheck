@@ -9,6 +9,7 @@ A small TypeScript SDK and CLI that checks explicit constraints in rewritten pro
 [![CI](https://github.com/Balaji91221/rewritecheck/actions/workflows/ci.yml/badge.svg)](https://github.com/Balaji91221/rewritecheck/actions/workflows/ci.yml)
 ![Node](https://img.shields.io/badge/node-%3E%3D20-339933)
 ![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178c6)
+[![npm](https://img.shields.io/npm/v/@kelavathbalajinaik/rewritecheck)](https://www.npmjs.com/package/@kelavathbalajinaik/rewritecheck)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
 [Quick start](#quick-start) · [SDK](#use-as-a-library) · [CLI](#use-the-cli) · [Architecture](docs/architecture.md) · [PromptForge demo](docs/promptforge.md) · [Contributing](CONTRIBUTING.md)
@@ -45,38 +46,29 @@ The SDK works locally with no runtime dependencies, model, API key, or hosted se
 
 ## Quick start
 
-This is an early source release. **The npm package is not published yet.** Node.js 20 or newer is required.
+Node.js 20 or newer is required. Install the public package in your project:
 
 ```sh
-git clone https://github.com/Balaji91221/rewritecheck.git
-cd rewritecheck
-npm ci
-npm run demo
+npm install @kelavathbalajinaik/rewritecheck
 ```
 
-Run the CLI against the included fixture:
+Run the included example without cloning this repository:
 
 ```sh
-node dist/cli.js examples/local-demo.json
-node dist/cli.js examples/local-demo.json --json
+node node_modules/@kelavathbalajinaik/rewritecheck/examples/sdk.mjs
 ```
 
-A changed result intentionally returns a nonzero exit code. This makes it usable in scripts and CI.
+The example reports a changed word limit and a reversed deployment instruction. It runs locally without a model or API key.
+
+For the standalone CLI, no project setup is needed:
+
+```sh
+npx @kelavathbalajinaik/rewritecheck --help
+```
 
 ## Use as a library
 
-Build a local package from the checkout:
-
-```sh
-npm run build
-npm pack
-```
-
-Install the resulting archive in your application, replacing the path with the actual archive location:
-
-```sh
-npm install /absolute/path/to/kelavathbalajinaik-rewritecheck-0.1.0.tgz
-```
+Save the following as `check.mjs`, then run `node check.mjs`:
 
 ```js
 import { auditRewrite } from '@kelavathbalajinaik/rewritecheck';
@@ -143,12 +135,20 @@ The timeout bounds the entire asynchronous review phase. Errors, cancellation, i
 
 ## Use the CLI
 
-After installing the local archive, `rewritecheck` is available as a binary:
+Run the scoped package directly, or use the `rewritecheck` binary in a project that has installed it:
 
 ```sh
-npx rewritecheck ./rewrite.json --json
-cat ./rewrite.json | npx rewritecheck -
+npx @kelavathbalajinaik/rewritecheck ./rewrite.json --json
+cat ./rewrite.json | npx @kelavathbalajinaik/rewritecheck -
 ```
+
+Try the included fixture after `npm install`:
+
+```sh
+npx --no-install rewritecheck node_modules/@kelavathbalajinaik/rewritecheck/examples/local-demo.json --json
+```
+
+The fixture intentionally returns exit code `1` because constraints changed.
 
 The JSON file uses the same shape as the SDK input above.
 
@@ -187,7 +187,13 @@ flowchart LR
 
 ## Test and evaluate
 
+To develop the library or run its full test suite, use a source checkout:
+
 ```sh
+git clone https://github.com/Balaji91221/rewritecheck.git
+cd rewritecheck
+npm ci
+npm run demo
 npm test
 npm run benchmark
 npm pack --dry-run

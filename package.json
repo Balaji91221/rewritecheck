@@ -22,7 +22,8 @@
     "README.md",
     "LICENSE",
     "docs",
-    "examples"
+    "examples",
+    "CONTRIBUTING.md"
   ],
   "scripts": {
     "build": "tsc -p tsconfig.json",
